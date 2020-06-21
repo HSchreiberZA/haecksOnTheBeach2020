@@ -1,0 +1,60 @@
+<!DOCTYPE HTML>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<script src="https://cdn.jsdelivr.net/npm/apexcharts"></script>
+<body>
+<script type="text/javascript">
+    // Map appearance
+    var width="100%";         // width in pixels or percentage
+    var height="300";         // height in pixels
+    var latitude="36.00";     // center latitude (decimal degrees)
+    var longitude="-5.40";    // center longitude (decimal degrees)
+    var zoom="8";             // initial zoom (between 3 and 18)
+</script>
+<script type="text/javascript" src="https://www.vesselfinder.com/aismap.js"></script>
+<p class="result" th:text="${'Current commodity value (per unit): $' + stock.getOpen()}">Bla</p>
+<p class="result" th:text="${'Distance from track (in kilometers): ' + stock.getClose()}"></p>
+<p id="symbol" style="display: none" th:text="${stock.getMeta().getSymbol()}">Bla</p>
+
+<div style="max-width: 650px; margin: 35px auto;" id="chart">
+</div>
+
+<script type="text/javascript">
+    let xhttp = new XMLHttpRequest();
+    xhttp.onreadystatechange = function() {
+        if (this.readyState === 4 && this.status === 200) {
+            var options = {
+                chart: {
+                    type: 'line'
+                },
+                series: [{
+                    name: 'Pricing',
+                    data: JSON.parse(this.responseText)
+                }],
+                stroke: {
+                    curve: 'smooth',
+                },
+                title: {
+                    text: 'Freight costs (in $)',
+                    align: 'left'
+                },
+                xaxis: {
+                    labels: {
+                        show: false
+                    }
+                }
+            }
+
+            var chart = new ApexCharts(document.querySelector("#chart"), options);
+
+            chart.render();
+        }
+    };
+    var symbol = document.getElementById("symbol").innerText;
+    xhttp.open("GET", "http://localhost:8080/history?symbol=" + symbol, true);
+    xhttp.setRequestHeader("Access-Control-Allow-Origin", "http://localhost:8080/history");
+    xhttp.setRequestHeader("Content-Type", "application/json");
+    xhttp.send();
+</script>
+
+</body>
+</html>

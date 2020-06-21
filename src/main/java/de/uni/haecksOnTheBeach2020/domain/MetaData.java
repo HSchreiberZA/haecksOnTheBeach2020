@@ -14,8 +14,17 @@ public class MetaData {
     @JsonProperty("5. Time Zone")
     private String timeZone;
 
+    public static final MetaData emptyMetaData = new MetaData("", "AAPL", "", "", "");
 
     public MetaData () {}
+
+    private MetaData (String information, String symbol, String lastRefreshed, String outputSize, String timeZone) {
+        this.information = information;
+        this.symbol = symbol;
+        this.lastRefreshed = lastRefreshed;
+        this.outputSize = outputSize;
+        this.timeZone = timeZone;
+    }
 
     @Override
     public String toString() {

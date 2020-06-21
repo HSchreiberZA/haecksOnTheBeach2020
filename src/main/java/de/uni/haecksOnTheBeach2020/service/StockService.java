@@ -6,7 +6,7 @@ import org.springframework.http.MediaType;
 import org.springframework.web.reactive.function.client.WebClient;
 import reactor.core.publisher.Mono;
 
-import static java.time.Duration.ofSeconds;
+import static java.time.Duration.ofMinutes;
 import static org.springframework.http.HttpMethod.GET;
 
 public class StockService {
@@ -19,7 +19,8 @@ public class StockService {
                 .accept(MediaType.APPLICATION_JSON)
                 .retrieve()
                 .bodyToMono(StockResponse.class)
-                .timeout(ofSeconds(3));
+                .timeout(ofMinutes(3))
+                .onErrorResume(e -> Mono.just(StockResponse.emptyStockResponse));
     }
 
     private WebClient.RequestBodySpec buildRequest (StockRequest request) {
